@@ -1,7 +1,6 @@
 # Articles discovered so far
 
 
-
 ## Multi-agent
 ### Multi-agent RL for TSC, ieee
 Formulates the problem as a discounted MDP, with multiple agents.
@@ -36,3 +35,4 @@ Simulator used: GLD (Green Light District).
 Machine learning project from Standford, utilizing Q-learning.
 Considers only a single traffic light, hence the single agent.
 Simulator used: SUMO (micro).
+
