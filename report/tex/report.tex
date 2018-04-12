@@ -1,0 +1,134 @@
+\documentclass[a4paper,11pt,oneside]{article}
+\usepackage[margin=3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[ddmmyy]{datetime}
+\usepackage{titlesec}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+
+\usepackage{color}
+\usepackage{float}
+\usepackage{fancyvrb}
+\usepackage[normalem]{ulem}
+
+\usepackage{forest}
+
+\usepackage{fancyhdr}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\usepackage{caption}
+\usepackage{xcolor}
+\hypersetup{
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = blue, %Colour for external hyperlinks
+	linkcolor    = black, %Colour of internal links
+	citecolor    = black %Colour of citations
+}
+\usepackage{multirow}
+\usepackage{cleveref}
+
+\usepackage{array}
+\usepackage{makecell}
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+\usepackage[square, numbers, comma, sort&compress]{natbib}  % Use the "Natbib" style for the references in the Bibliography
+\usepackage{verbatim}  % Needed for the "comment" environment to make LaTeX comments
+
+\usepackage{import}
+
+
+\usepackage{subcaption} % Only use one of the two
+% \usepackage{subfig}    % Only use one of the two
+
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.svg}
+
+\definecolor{dkgreen}{rgb}{0,0.45,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.30,0,0.30}
+
+
+
+%%%%%%% CHANGE THESE %%%%%%%%%
+\newcommand{\implementationlanguage}{python}
+\setlength\parindent{0pt}
+
+
+
+\lstset{frame=tb,
+	language=\implementationlanguage,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=left,
+	numberstyle=\footnotesize,
+	keywordstyle=\color{dkgreen}\bfseries,
+	commentstyle=\color{red},
+	stringstyle=\color{mauve},
+	frame=single,
+	breaklines=true,
+	breakatwhitespace=false
+	tabsize=1
+}
+
+
+\title{Traffic Light Control by Reinforcement Learning\\\rule{10cm}{0.5mm}}
+\author{Henrik Sejer Pedersen
+  \\
+  Supervisor: Marco Chiarandini\\
+  \rule{5.5cm}{0.5mm}
+}
+\date{\longdate\today}
+
+
+
+\begin{document}
+\maketitle
+\vfill
+\newpage
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%
+% Chapters
+%%%%%%%%%%%%%%
+
+\pagestyle{fancy}
+
+%\input{chapters/test.tex}
+
+
+%%%%%%%%%%%%%%
+% Appendices
+%%%%%%%%%%%%%%
+
+\addtocontents{toc}{\vspace{2em}}
+\appendix
+
+% \input{Appendices/...}
+
+\addtocontents{toc}{\vspace{2em}}
+
+
+
+% ------------------------------
+\label{Bibliography}
+\lhead{\emph{Bibliography}}
+\bibliographystyle{unsrtnat}
+%\bibliography{Bibliography}
+
+\end{document}
