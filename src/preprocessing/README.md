@@ -91,10 +91,12 @@ detector_routes = [('1', '2'),
 The above was generated programatically, and is in string form. To make things a bit easier, the function `str_tuple_list_to_int_tuple_list` was created, and simply converts the strings to the integers needed by `get_route_vehicle_counts`.
 
 ```python
-get_route_vehicle_counts(self, routes, granularity=5, oidx=False)
+get_route_vehicle_counts(self, routes, granularity=5, oidx=False, ub_solver=False)
 ```
 Where `routes` is the data structure mentioned above, `granularity` is an aggregation parameter, and it is recommended to keep this equal to the input data frequency, or at least a multiple thereof.
 If the induction loop id's are one indexed, `oidx` should be set to true.
+
+The parameter `ub_solver` specifies if the counts should be treated as upper bounds. Leaving this false is generally recommended as the lower bound solver will generate more vehicles, and faster as it is parallelized.
 
 The result is a list of dictionaries of the form:
 ```python

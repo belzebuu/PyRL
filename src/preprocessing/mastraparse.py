@@ -6,8 +6,11 @@ import math
 from pprint import pprint
 import operator
 import itertools
+import functools
 import random
 from ortools.linear_solver import pywraplp
+import multiprocessing as mp
+import os
 
 
 class mastra():
@@ -91,7 +94,7 @@ class mastra():
         for route, bin_repr in route_vec_dict.items():
             try:
                 accu = accu | np.array(bin_repr)
-            except Exception: 
+            except Exception:
                 accu = np.array(bin_repr)
         for i in range(len(capacity_vector)):
             if accu[i] == 0:
@@ -134,7 +137,7 @@ class mastra():
         solver.Minimize(cost)
         if solver.Solve() == solver.INFEASIBLE:
             raise Exception("INFEASIBLE")
-        print("Final cost: ", solver.Objective().Value() )
+        # print("Final cost: ", solver.Objective().Value())
         route_count = {}
         for route, index in route_to_int.items():
             route_count[route] = int(X[index].SolutionValue())
@@ -152,23 +155,40 @@ class mastra():
         for route in routes:
             route_vec_map[route] = self.get_route_vector(
                 self.__oidxfix__(route, oidx), len(readings[0]))
-        if ub_solver:
-            optimize = self.__ub_solver__
-        else:
-            optimize = self.__lb_solver__
         route_count = []
-        # Initialize array of 0's with correct length
-        remainder = readings[0] - readings[0]
-        for reading in readings:
-            reading += remainder
-            # print(["{}:{}".format(index+1, count) for (index, count) in enumerate(reading) if count != 0])
-            result = optimize(route_vec_map, reading)
-            if ub_solver:
+        if ub_solver:
+            # Initialize array of 0's with correct length
+            remainder = readings[0] - readings[0]
+            for reading in readings:
+                reading += remainder
+                # print(["{}:{}".format(index+1, count) for (index, count) in enumerate(reading) if count != 0])
+                result = self.__ub_solver__(route_vec_map, reading)
                 remainder = result["remainder"]
-            route_count.append(
-                {route: count for route, count in result["route_count"].items() if count != 0})
-            # print(["{}:{}".format(detector+1, count)
+                route_count.append(
+                    {route: count for route, count in result["route_count"].items() if count != 0})
+                # print(["{}:{}".format(detector+1, count)
                 #    for (detector, count) in enumerate(remainder) if count != 0])
+        else:
+            l = [(route_vec_map, reading) for reading in readings]
+            sol = []
+            try:
+                with mp.Pool(mp.cpu_count()) as p:
+                    sol = p.starmap(self.__lb_solver__, l)
+                    p.close()
+                    p.join()
+            except NotImplementedError:
+                with mp.Pool(4) as p:
+                    sol = p.starmap(self.__lb_solver__, l)
+                    p.close()
+                    p.join()
+            route_count = [
+                    {
+                        route: count 
+                        for route, count in result["route_count"].items() 
+                        if count != 0
+                    } 
+                    for result in sol
+                ]
         return(route_count)
 
     def __oidxfix__(self, tup, mode):
@@ -367,6 +387,7 @@ detector_to_routeid = {('0',): ['12', '13', '15', '24'],
 
 
 def main(input):
+    random.seed(0)
     interval = 5
     m = mastra(input)
     # pprint(m.get_periods())
@@ -374,7 +395,8 @@ def main(input):
     # counts = m.get_route_vehicle_counts(str_tuple_list_to_int_tuple_list(detector_routes), oidx=True)
     # pprint(counts)
     dr = str_tuple_list_to_int_tuple_list(detector_routes)
-    rc = m.get_route_vehicle_counts(dr, granularity=interval, oidx=True)
+    rc = m.get_route_vehicle_counts(
+        dr, granularity=interval, oidx=True, ub_solver=False)
     date = datetime.datetime.now()
     with open("{}-{}-{}-{}-{}.rou.xml".format(date.year, date.month, date.day, date.hour, date.minute), "w") as f_out:
         generate_vehicles(detector_to_routeid, rc, interval, out=f_out)
