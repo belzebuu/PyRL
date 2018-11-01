@@ -1,10 +1,12 @@
 \section{Instance definition}
-In this section, we introduce a traffic light located in southern Odense, Denmark and its implementation in the microscopic traffic simulator SUMO - \textit{Simulation of Urban MObility}.
+In this section, we introduce a traffic light located in southern Odense, Denmark and its implementation in the microscopic traffic simulator SUMO -- \textit{Simulation of Urban MObility}.
 
 \subsection{Network topology}
-The company \swarco provided the data and network information we use in this project. We look at a traffic light controlled intersection located in southern Odense, Denmark, depicted in \cref{appendix:techdraw}. We modeled the intersection in the microscopic traffic simulator SUMO, without the inclusion of bicycles, as the available data on bicycles is quite limited.
+The company \swarco{} provided the data and network information we use in this project. We look at a traffic light controlled intersection located in southern Odense, Denmark, depicted in \cref{appendix:techdrawloop}. We modeled the intersection in the microscopic traffic simulator SUMO, without the inclusion of bicycles, as the available data on bicycles is quite limited.
 
 \subsubsection{Induction Loops}
+In the network, a number of vehicle detectors are present, in the form of \textit{induction loops}.
+In \cref{appendix:techdrawloop}, the locations of induction loops relevant to the intersection is visualized. \Cref{fig:inductionsignatures} describes the meaning of the visualization.
 
 \begin{figure}[!htb]
   \centering
@@ -13,8 +15,24 @@ The company \swarco provided the data and network information we use in this pro
   \label{fig:inductionsignatures}
 \end{figure}
 
+The induction loops in the intersection cover vehicles quite well, but are quite lacking when it comes to bicycles, for this reason, bicycles are excluded from the project.
+
 
 \subsubsection{Traffic light movements}
+\Cref{appendix:techdrawmovement} visualizes the traffic signal groups in the intersection. \Cref{tab:intersectionmovements} describes the traffic signal strings on the drawing. A single signal can control multiple of these movements, denoted by, for instance, A1$+$A1v denotes a single signal controlling both left-turn and straight movements of A1.
+
+\begin{table}[!htb]
+  \centering
+  \begin{tabular}{|c|c|}\hline
+      string & meaning \\\hline
+       A/B/C/\ldots\# & Upstream movement following road\\\hline
+       A\#Cy & Straight-ahead bicycle movement from A\#\\\hline
+       A\#v & Left-turn movement from A\#\\\hline
+       A\#h & right-turn movement from A\#\\\hline
+  \end{tabular}
+  \caption{Explanation of traffic light movement strings for \cref{appendix:techdrawmovement}\\\replace{todo: better string representation}}
+  \label{tab:intersectionmovements}
+\end{table}
 
 \subsection{SUMO Introduction}
 SUMO, short for \textit{Simulation of Urban MObility}, is a microscopic, well-established general-purpose traffic simulator. It has been around since 2001 and is an open source project. What makes it particularly interesting for this project, is the ability to control elements of the simulation externally, through a well-defined API. With this API, gathering information from the simulation for our agent is made simple, while also providing a way for our agent to control each traffic light.
@@ -24,8 +42,14 @@ SUMO uses a directed graph representation to define a traffic network, with some
 \textit{Nodes} in the graph are points connected by one or more \textit{edges}. Nodes contain connection data, which is (potentially) a many-to-many mapping of incoming lanes to outgoing lanes. The edges carry the lane information, allowing any number of adjacent lanes (within computational reason) to follow any single edge between two nodes. As such, each edge defines a set of up- or down-stream lanes, possibly consisting of multiple traffic movements.
 
 
-\replace{picture of SUMO network implementation}
+\begin{figure}[!htb]
+  \centering
+  \includeinkscape[scale=0.2]{sumo}
+  \caption{Intersection as implemented in SUMO, visualised by SUMO-GUI\\\replace{todo: better image}}
+  \label{fig:sumointerimpl}
+\end{figure}
 
+The primary discrepancies between the actual intersection and the one implemented in SUMO are the missing induction loop D18. The induction loop is not present in the SUMO implementation as SUMO only allows placing induction loops on lanes.
 
 \subsection{Vehicle data}
 
@@ -61,8 +85,8 @@ Let $C_i$ be an an detected number of vehicles at detector $D_i,\ \forall i \in 
 Let $x_j$ be an integer variable with a lower bound of 0, indicating the number of vehicles following route $j, \forall j \ in J$
 \begin{align*}
   \begin{array}{rrcll}
-    \text{Maximize} & \sum_{j\in J}x_j \cdot \sum_{i\in I}B_{ij}&&&\\
-    \text{s.t.} & \sum_{j\in J}B_{ij}\cdot x_j & \leq & C_i & \qquad \forall i \in I\\
+    \text{Maximize} & \displaystyle\sum_{j\in J}x_j \cdot \sum_{i\in I}B_{ij}&&&\\
+    \text{s.t.} & \displaystyle\sum_{j\in J}B_{ij}\cdot x_j & \leq & C_i & \qquad \forall i \in I\\
     & x_j & \in & \mathbb{N}&\qquad \forall j \in J\\
     & x_j & \geq & 0&\qquad \forall j \in J
   \end{array}
@@ -76,3 +100,18 @@ The second constraint ensures that the number of vehicles entering the simulatio
 The Third constraint ensures that the number of cars on each route must be non-negative.
 
 \subsubsection{Misses, no overcounts}
+The previous model can with a few changes be modified, such that the vehicle counts act as lower bounds rather than upper bounds.
+Treating vehicle counts as lower bounds will put a more significant strain on the network, as more vehicles enter the simulation, which is desired.
+
+\begin{align*}
+  \begin{array}{rrcll}
+    \text{Minimize} & \displaystyle\sum_{j\in J}x_j \cdot \sum_{i\in I}B_{ij}&&&\\
+    \text{s.t.} & \displaystyle\sum_{j\in J}B_{ij}\cdot x_j & \geq & C_i & \qquad \forall i \in I\\
+    & x_j & \in & \mathbb{N}&\qquad \forall j \in J\\
+    & x_j & \geq & 0&\qquad \forall j \in J
+  \end{array}
+\end{align*}
+
+The objective of the new model is to minimize the number of vehicles passing induction loops, while enforcing that at least the observed number of vehicles pass.
+
+It is important to note that in this model, $B_{i\cdot}$ must contain at least one 1 to be feasible for all $i$, whereas this was not the case for the previous model.
