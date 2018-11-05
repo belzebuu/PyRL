@@ -36,3 +36,27 @@ Machine learning project from Standford, utilizing Q-learning.
 Considers only a single traffic light, hence the single agent.
 Simulator used: SUMO (micro).
 
+## Mixed
+
+### Reinforcement Learning for True Adaptive Traffic Signal Control
+Among the first attempts at utilizing reinforcement learning for adaptive traffic control, this paper explores both the single- and multi-agent approaches, however results were only represented for the single-agent approach.
+
+#### Preliminary
+ * Q-learning (Temopral difference algorithm) approach.
+ * Q-Values stored in CMAC (Cerebellar Model  Articulation  Controller) -- a neural-network like data structure, in this case used more like a lookup-table than usual neural network.
+ * 
+
+#### State:
+* In the single agent case, state was by default defined by a vector of queue lengths for each lane.
+* Generalization implemented through the cmac changed this to a resolution of 50% i.e. the queue lengths of two adjacent lanes are combined.
+
+#### Action
+ * In the single-agent case, the state-action space is reduced by giving the agent the choice of changing or staying with the current phase. The agent gets this choice at some point between 10 seconds into the cycle and 10 seconds before its end (the time bounds are based on the fixed-time method).
+ * In the multi-agent case additional information is suggested, in the form of up- and down-stream queue lengths from adjacent agents.
+
+#### Reward
+ * Reward is given in the form of a penalty equal to the cumulated waiting time since last action.
+
+#### Other
+ * Brings up a couple of possible ways of agent communication strategies
+ * 
