@@ -1,3 +1,4 @@
+% !TeX root = ../report.tex
 \section{Instance definition}
 In this section, we introduce a traffic light located in southern Odense, Denmark and its implementation in the microscopic traffic simulator SUMO -- \textit{Simulation of Urban MObility}.
 
@@ -91,7 +92,7 @@ Let $x_j$ be an integer variable with a lower bound of 0, indicating the number 
     & x_j & \geq & 0&\qquad \forall j \in J
   \end{array}
 \end{align*}
-The objective function maximizes the total sum of vehicles to insert, by multiplying the number of vehicles on route some route, by the sum of detectors it passes. 
+The objective function maximizes the total sum of vehicles passing detectors. The outer sum sums over each route, and the second sum computes the number of detectors in the route from the outer sum.
 
 The first constraint ensures that the sum of vehicles passing a detector does not surpass its capacity.
 
@@ -114,4 +115,4 @@ Treating vehicle counts as lower bounds will put a more significant strain on th
 
 The objective of the new model is to minimize the number of vehicles passing induction loops, while enforcing that at least the observed number of vehicles pass.
 
-It is important to note that in this model, $B_{i\cdot}$ must contain at least one 1 to be feasible for all $i$, whereas this was not the case for the previous model.
+It is important to note that in this model, $B_{i\cdot}$ must contain at least $one$ $1$ to be feasible for all $i$, whereas this was not the case for the previous model.
