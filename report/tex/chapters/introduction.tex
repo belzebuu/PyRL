@@ -10,7 +10,7 @@ Reinforcement learning is a machine learning paradigm dedicated to solving seque
 \subsubsection{Finite Markov Decision Processes}
 
 The Markov decision process provides a formal description of sequential decision problems. 
-In this project, we define a Markov decision process by a 4-tuple $(\mathcal{S},\mathcal{A},\mathcal{R}, p)$, where $\mathcal{S}$ is the state-space, $\mathcal{A}$ is the action-space, $\mathcal{R} \subset \mathbb{R}$ is the reward-space, and the function $p : \mathcal{S} \times \mathcal{R} \times \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$ describes the conditional probability of entering a state $s' \in \mathcal{S}$ with reward $r \in \mathcal{R}$ given the previous state was $s \in \mathcal{S}$ and action $a \in \mathcal{A}$ was chosen.
+In this project, we define a Markov decision process by a 4-tuple $(\mathcal{S},\mathcal{A},\mathcal{R}, p)$, where $\mathcal{S}$ is the state-space, $\mathcal{A}$ is the action-space, $\mathcal{R} \subset \mathbb{R}$ is the reward-space, and the function $p : \mathcal{S} \times \mathcal{R} \times \mathcal{S} \times \mathcal{A} \rightarrow [0,1]$ describes the conditional probability of entering a state $s' \in \mathcal{S}$ with reward $r \in \mathcal{R}$ given the previous state was $s \in \mathcal{S}$ and action $a \in \mathcal{A}$ was chosen.
 In finite Markov decision processes $\mathcal{S}$, $\mathcal{A}$ and $\mathcal{R}$ are all finite sets. 
 
 \begin{align}
@@ -36,7 +36,7 @@ The agent the chooses some an action, yielding $A_0$, after the action has been 
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[scale=0.5]{../include/MDP.pdf}
+    \includegraphics[scale=0.8]{../include/PDF/MDP.pdf}
     \caption{\todo}
     \label{fig:MDP}
 \end{figure}
