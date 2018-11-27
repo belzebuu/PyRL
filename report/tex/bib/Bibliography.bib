@@ -1,29 +1,115 @@
 @book{RLBook2018,
 Author={Sutton, Richard S. and Barto, Andrew G.},
-Title={Reinforcement Learning: An Introduction},
+Title={{Reinforcement Learning: An Introduction}},
 Publisher={MIT Press, Cambridge, MA},
 Year={2018},
 Edition={2nd},
 }
 
+@article{SCAT1980,
+author={Sims,A. G. and Dobinson,K. W.},
+year={1980},
+title={The {Sydney} {C}oordinated {A}daptive {Traffic} ({SCAT}) {S}ystem {P}hilosophy and {B}enefits},
+journal={IEEE Transactions on Vehicular Technology},
+volume={29},
+number={2},
+pages={130-137},
+abstract={Sydney, Australia, just as many major cities in the world, has seen traffic movement become more and more congested despite capital expenditure on road construction and widening, on public transport systems, and on traffic management measures. SCAT, the coordinated adaptive traffic signal system, now being installed in Sydney, offers a substantial improvement to movement on arterial roads at low cost thereby enabling usage of the arterial road network to be optimized. An initial trial on a length of arterial road showed advantages in journey time over optimized fixed-time signal coordination of 35-39 percent in peak periods. SCAT is unique in that it consists entirely of computers and is totally adaptive to traffic demand. Its communication network provides extremely powerful yet flexible management of the system. The system, the system philosophy, and the benefits it is expected to yield are described. The benefits are not only in reduced delay, improved flow, and decreased congestion, but also in reduced accidents, lesser usage of petroleum resources, decreased air pollution, and improved residential amenity.},
+keywords={Adaptive systems; Atmospheric measurements; Roads; Telecommunication traffic; Cities and towns; Cost function; Pollution measurement; Australia; Communication networks; Computer network management},
+isbn={0018-9545},
+language={English},
+}
+
+@ARTICLE{SCOOT1991,
+author={Robertson,Dennis I. and Bretherton,R. David },
+journal={IEEE Transactions on Vehicular Technology},
+title={Optimizing networks of traffic signals in real time -- the {SCOOT} method},
+year={1991},
+volume={40},
+number={1},
+pages={11-15},
+keywords={real-time systems;road traffic;traffic computer control;networks optimisation;British Government;traffic signals;SCOOT urban traffic control system;Transport and Road Research Laboratory;TRANSYT method;online traffic model;real-time signal optimizers;Optimization methods;Telecommunication traffic;Intelligent networks;Traffic control;Roads;Communication system traffic control;Control systems;Cities and towns;Centralized control;Delay},
+doi={10.1109/25.69966},
+ISSN={0018-9545},
+month={Feb},}
+
+
+@TECHREPORT{Thorpe96trafficlight,
+    author = {Thomas L. Thorpe and Charles W. Anderson},
+    title = {{Traffic Light Control Using SARSA with Three State Representations}},
+    institution = {IBM Corporation},
+    year = {1996}
+}
+
+@inproceedings{wiering2000multi,
+  title={{Multi-agent reinforcement learning for traffic light control}},
+  author={Wiering, MA},
+  booktitle={Machine Learning: Proceedings of the Seventeenth International Conference (ICML'2000)},
+  pages={1151--1158},
+  year={2000}
+}
+
 @article{AbdulhaiPringleKarakoulas,
-Abstract = {The ability to exert real-time, adaptive control of transportation processes is the core of many intelligent transportation systems decision support tools. Reinforcement learning, an artificial intelligence approach undergoing development in the machine-learning community, offers key advantages in this regard. The ability of a control agent to learn relationships between control actions and their effect on the environment while pursuing a goal is a distinct improvement over prespecified models of the environment. Prespecified models are a prerequisite of conventional control methods and their accuracy limits the performance of control agents. This paper contains an introduction to Q-learning, a simple yet powerful reinforcement learning algorithm, and presents a case study involving application to traffic signal control. Encouraging results of the application to an isolated traffic signal, particularly under variable traffic conditions, are presented. A broader research effort is outl},
 Author = {Abdulhai, Baher and Pringle, Rob and Karakoulas, Grigoris J.},
 ISSN = {0733947X},
 Journal = {Journal of Transportation Engineering},
 Keywords = {TRAFFIC engineering, ADAPTIVE control systems, TRAFFIC signs & signals},
 Number = {3},
 Pages = {278},
-Title = {Reinforcement Learning for True Adaptive Traffic Signal Control.},
+Title = {{Reinforcement Learning for True Adaptive Traffic Signal Control.}},
 Volume = {129},
 Year = {2003},
 }
 
+@article{ItamarEtAl,
+author={Arel, Itamar and Liu, Cong and Urbanik, Thomas and Kohls, A. G.},
+year={2010},
+month={06},
+title={{Reinforcement learning-based multi-agent system for network traffic signal control}},
+journal={IET Intelligent Transport Systems},
+volume={4},
+number={2},
+pages={128-135},
+abstract={A challenging application of artificial intelligence systems, involves the scheduling of traffic signals in multi-intersection vehicular networks. This paper introduces, a novel use of a multi-agent system and reinforcement learning (RL) framework to obtain an efficient traffic signal control policy. A five-intersection traffic network has been studied, in which each intersection is governed by an autonomous intelligent agent. Two types of agents, a central agent and an outbound agent, were employed. The outbound agents, schedule traffic signals by following the longest-queue-first (LQF) algorithm, which has been proved to guarantee stability and fairness, and collaborate with the central agent by providing its local traffic statistics. The central agent, learns a value function driven by its local and neighbours' traffic conditions. The novel methodology proposed, utilises the Q-Learning algorithm with a feedforward neural network for value function approximation. Experimental results clearly demonstrate the advantages of multi-agent, RL-based control, over LQF governed the isolated, single-intersection control, thus paving the way for efficient distributed traffic signal control in complex settings.},
+keywords={Transportation},
+isbn={1751956X},
+language={English},
+} 
+
+@incollection{bakker2010traffic,
+  title={{Traffic light control by multiagent reinforcement learning systems}},
+  author={Bakker, Bram and Whiteson, Shimon and Kester, Leon and Groen, Frans CA},
+  booktitle={Interactive Collaborative Information Systems},
+  pages={475--510},
+  year={2010},
+  publisher={Springer}
+}
+
+@article{asyncRL,
+  author    = {Volodymyr Mnih and
+               Badia, Adri{\`{a}} P. and
+               Mehdi Mirza and
+               Alex Graves and
+               Timothy P. Lillicrap and
+               Tim Harley and
+               David Silver and
+               Koray Kavukcuoglu},
+  title     = {{Asynchronous Methods for Deep Reinforcement Learning}},
+  journal   = {CoRR},
+  volume    = {abs/1602.01783},
+  year      = {2016},
+  url       = {http://arxiv.org/abs/1602.01783},
+  archivePrefix = {arXiv},
+  eprint    = {1602.01783},
+  timestamp = {Mon, 13 Aug 2018 16:47:40 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/MnihBMGLHSK16},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
 
 @article{ExploringRewardDefinitions,
 author={Touhbi,Saad and Babram,Mohamed A. and Nguyen-Huu,Tri and Marilleau,Nicolas and Hbid,Moulay L. and Cambier,Christophe and Stinckwich,Serge},
 year={2017},
-title={Adaptive Traffic Signal Control : Exploring Reward Definition For Reinforcement Learning},
+title={{Adaptive Traffic Signal Control : Exploring Reward Definition For Reinforcement Learning}},
 journal={Procedia Computer Science},
 volume={109},
 pages={513-520},
@@ -32,23 +118,11 @@ isbn={1877-0509},
 language={English},
 }
 
-@article{StateRepresentations,
-author={Genders,Wade and Razavi,Saiedeh},
-year={2018},
-title={Evaluating reinforcement learning state representations for adaptive traffic signal control},
-journal={Procedia Computer Science},
-volume={130},
-pages={26-33},
-keywords={Reinforcement Learning; Intelligent Transportation Systems; Artificial Neural Networks; Traffic Simulation; Adaptive Traffic Signal Control},
-isbn={1877-0509},
-language={English},
-}
-
-
-%@article{ModelsAndAlgorithms,
-author={Yau,Kok-Lim and Qadir,Junaid and Khoo,Hooi and Ling,Mee and Komisarczuk,Peter},
-year={2017;2018;},
-title={A Survey on Reinforcement Learning Models and Algorithms for Traffic Signal Control},
+@article{ModelsAndAlgorithms,
+author={Yau, Kok-Lim Alvin and Qadir, Junaid and Khoo, Hooi Ling and Ling, Mee Hong and Komisarczuk, Peter},
+year={2017},
+issue_date = {October 2017},
+title={{A Survey on Reinforcement Learning Models and Algorithms for Traffic Signal Control}},
 journal={ACM Computing Surveys (CSUR)},
 volume={50},
 number={3},
@@ -61,7 +135,7 @@ language={English},
 
 @article{Yau:2017:SRL:3101309.3068287,
  author = {Yau, Kok-Lim Alvin and Qadir, Junaid and Khoo, Hooi Ling and Ling, Mee Hong and Komisarczuk, Peter},
- title = {A Survey on Reinforcement Learning Models and Algorithms for Traffic Signal Control},
+ title = {{A Survey on Reinforcement Learning Models and Algorithms for Traffic Signal Control}},
  journal = {ACM Comput. Surv.},
  issue_date = {October 2017},
  volume = {50},
@@ -80,23 +154,14 @@ language={English},
  keywords = {Applied artificial intelligence, intelligent transportation system, multiagent system, traffic signal control},
 }
 
-@article{DBLP:journals/corr/MnihBMGLHSK16,
-  author    = {Volodymyr Mnih and
-               Adri{\`{a}} Puigdom{\`{e}}nech Badia and
-               Mehdi Mirza and
-               Alex Graves and
-               Timothy P. Lillicrap and
-               Tim Harley and
-               David Silver and
-               Koray Kavukcuoglu},
-  title     = {Asynchronous Methods for Deep Reinforcement Learning},
-  journal   = {CoRR},
-  volume    = {abs/1602.01783},
-  year      = {2016},
-  url       = {http://arxiv.org/abs/1602.01783},
-  archivePrefix = {arXiv},
-  eprint    = {1602.01783},
-  timestamp = {Mon, 13 Aug 2018 16:47:40 +0200},
-  biburl    = {https://dblp.org/rec/bib/journals/corr/MnihBMGLHSK16},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
+@article{StateRepresentations,
+author={Genders,Wade and Razavi,Saiedeh},
+year={2018},
+title={{Evaluating reinforcement learning state representations for adaptive traffic signal control}},
+journal={Procedia Computer Science},
+volume={130},
+pages={26-33},
+keywords={Reinforcement Learning; Intelligent Transportation Systems; Artificial Neural Networks; Traffic Simulation; Adaptive Traffic Signal Control},
+isbn={1877-0509},
+language={English},
 }

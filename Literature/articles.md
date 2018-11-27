@@ -54,7 +54,7 @@ Among the first attempts at utilizing reinforcement learning for adaptive traffi
 #### Method(s)
 
 * Q-learning (Off-policy TD algorithm).
-* Q-Values stored in CMAC (Cerebellar Model  Articulation  Controller) -- a neural-network like data structure, in this case used more like a lookup-table than usual neural network.
+* Q-Values stored in CMAC (Cerebellar Model  Articulation  Controller) -- a neural-network like data structure, in this case used as a lookup-table rather than usual neural network. (Tabular RL)
 * epsilon-greedy action selection, epsilon = 0.9
 
 #### State

@@ -1,66 +1,33 @@
 % !TeX root = ../report.tex
 \section{Introduction}
 
-\subsection{regular introduction stuff}
+With a steady increase in urbanization on top of already existing traffic problems in urban areas, the need for improving the traffic flow becomes ever more apparent. 
+In urban areas, it is likely to be very costly if at all feasible to tear up existing infrastructure to accommodate better roads, so we turn our focus to the dynamic element present in most urban areas today, traffic lights.
 
-\subsection{Introduction to reinforcement learning}
-Reinforcement learning is a machine learning paradigm dedicated to solving sequential decision processes. The definition of a reinforcement learning algorithm given by \citet{RLBook2018}, is an algorithm which can solve a specific kind of sequential decision problem, namely those which can be described formally by a \textit{finite Markov decision process}.
+Traffic lights provide an opportunity to influence the traffic flow in urban areas utilizing software, be it simple fixed-time, scheduled light changes or sophisticated traffic-reactive systems. 
 
+In this project, we look into the online, adaptive optimization strategies through reinforcement learning. Some of the early adaptive approaches SCAT\cite{SCAT1980} which was implemented in Sydney around 1980 and SCOOT\cite{SCOOT1991}, which is in extensive use to this date, focus on the coordination of multiple intersections, often known as \emph{urban traffic control}. 
+In \citet{SCOOT1991}, the coordination serves to shift traffic light cycles such that average queue lengths and vehicle stops are minimized, but still rely on the individual traffic light cycle to be efficient.
 
-\subsubsection{Finite Markov Decision Processes}
+\vspace*{1em}
 
-The Markov decision process provides a formal description of sequential decision problems. 
-In this project, we define a Markov decision process by a 4-tuple $(\mathcal{S},\mathcal{A},\mathcal{R}, p)$, where $\mathcal{S}$ is the state-space, $\mathcal{A}$ is the action-space, $\mathcal{R} \subset \mathbb{R}$ is the reward-space, and the function $p : \mathcal{S} \times \mathcal{R} \times \mathcal{S} \times \mathcal{A} \rightarrow [0,1]$ describes the conditional probability of entering a state $s' \in \mathcal{S}$ with reward $r \in \mathcal{R}$ given the previous state was $s \in \mathcal{S}$ and action $a \in \mathcal{A}$ was chosen.
-In finite Markov decision processes $\mathcal{S}$, $\mathcal{A}$ and $\mathcal{R}$ are all finite sets. 
+In this project, we seek to explore the application of reinforcement learning to control the individual traffic light, using only existing infrastructure.
 
-\begin{align}
-    \sum_{s' \in \mycal{S}}\sum_{r \in \mycal{R}} p(s', r, s, a) = 1 \qquad \forall s \in \mycal{S}, \forall a \in \mycal{A}(s)
-\end{align}
+At a very high level, reinforcement learning consist of an \textit{agent} placed into some \textit{envrionment}, where it takes actions and receive some \textit{reward} based on those actions. Over time, the goal of the agent is to learn which actions to take in what situations to maximize the expected future reward. We will only cover a small part of reinforcement learning in this project, for a wider overview refer to \citet{RLBook2018}.
 
-\vspace*{0.5cm}
+The application of reinforcement learning to the field of traffic light control has been examined many a time\citep{Thorpe96trafficlight}\citep{wiering2000multi}\citep{AbdulhaiPringleKarakoulas}\citep{ItamarEtAl}\citep{bakker2010traffic}\citep{ExploringRewardDefinitions}\citep{ModelsAndAlgorithms}\citep{StateRepresentations}.
+However, due to the data made available by swarco Danmark A/S, we can  provide further insight into the details of applying reinforcement learning to traffic light control based on existing infrastructure and information.
 
-When solving Markov decision processes, a sequence of random variables is introduced. Let $T = \set{1, 2, \ldots}$ be a sequence of discrete time steps, $S_t$ is then a random variable which indicates the state of the environment at time step $t$, $A_t$ is the action chosen at time step $t$, from the set $\mathcal{A}(s)$ which denotes the actions available from state $s$. 
-$R_t$ is the reward received after choosing action $A_{t-1}$ in state $S_{t-1}$
+\citet{Thorpe96trafficlight} showed great potential of reinforcement learning applied to traffic light control with their implementation of the SARSA algorithm on three different complete-knowledge state representations on a grid of 4x4 intersections, approaching the performance of an optimal policy.
 
-\vspace*{0.5cm}
+\citet{wiering2000multi} presented three different state representations for the multi-agent problem, where varying degrees of global information was included in the states. 
+He found that more global information did not necessarily mean better performance, but some global information did perform better than none.
 
-\Cref{fig:agent-environment} visualises the agent-environment loop. 
-Initially, the agent in placed in some environment \mycal{E}, from where the agent observes $S_0$.
-The agent the chooses some an action, yielding $A_0$, after the action has been performed, state $S_{t+1}$ and $R_t$ is presented to the agent, this results in a sequence of the form $S_0,A_0,R_1,S_1,A_1,R_2,S_2,\ldots$
+\citet{AbdulhaiPringleKarakoulas} implemented Q-learning which is a temporal-difference algorithm, on a single-agent basis, with comments on ideas to improve it for multi-agent use. 
+They used state information which could be estimated from detector data, in the form of queue lengths and elapsed phase time.  
+The reward used is a penalty in the form of total vehicle delay between decision points. 
+Additionally, they made use of a neural-network-like structure (CMAC) to approximate the value function, which provided some generalization and should, to some extent, improve behavior in unobserved states.
 
-
-
-\begin{align*}
-    p(s',r | s,a) \defeq \Pr{S_t\!=\!s', R_t\!=\!r | S_{t-1}\!=\!s, A_{t-1}\!=\!a}
-\end{align*}
-
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[scale=0.8]{../include/PDF/MDP.pdf}
-    \caption{\todo}
-    \label{fig:MDP}
-\end{figure}
-
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[scale=1]{../include/agent-environment-loop.pdf}
-    \caption{The Agent-Environment interface adapted from \citep{RLBook2018}}
-    \label{fig:agent-environment}
-\end{figure}
+\citet{ItamarEtAl} used an actual neural network for value function approximation, which should perform even better in unobserved states compared to the CMAC. The state used is also significantly improved, as it incorporates only what they refer to as \emph{relative traffic flow}, calculated for every upstream lane as traffic flow in that lane divided by average traffic flow of all upstream lanes of the intersection. Such a state representation can be implemented using detector data only. The reward is based on average delay, giving a negative reward if an action increases the average delay, but a positive reward if it is decreased.
 
 
-\begin{figure}[!htb]
-    \centering
-    \replace{Visual MDP representation for small example?}
-    \caption{MDP represented as a graph}
-    \label{fig:mdp-graph-repr}
-\end{figure}
-
-\subsubsection{RL}
-according to some policy $\pi$ either \textit{exploitatively} or \textit{exploratively}.
-
-\subsection{Literature review}
-
-\cite{AbdulhaiPringleKarakoulas}
-\cite{StateRepresentations}
-\cite{ExploringRewardDefinitions}

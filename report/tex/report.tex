@@ -1,5 +1,5 @@
 \documentclass[a4paper,11pt,oneside]{article}
-\usepackage[margin=3cm]{geometry}
+\usepackage[headheight=28pt,showframe,margin=3cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -7,7 +7,6 @@
 \usepackage{titlesec}
 \usepackage{tikz}
 \usetikzlibrary{arrows}
-
 \usepackage{color}
 \usepackage{float}
 \usepackage{fancyvrb}
@@ -49,7 +48,6 @@
 #1\\
 #2
 \end{pmatrix}}}
-\newcommand{\textcal}[1]{\ensuremath{\mathcal{#1}}}
 \renewcommand{\vec}[1]{\ensuremath{\mathbf #1}}
 \newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
 \newcommand{\pr}[1]{\ensuremath{Pr\left\{#1\right\}}}
@@ -59,17 +57,18 @@
 \newcommand{\abs}[1]{\ensuremath{\left|#1\right|}}
 \newcommand{\swarco}{\textsc{swarco}}
 \newcommand{\mycal}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\Ex}[1]{\ensuremath{\mathbb{E}\left[#1\right]}}
 
 \usepackage{mathtools}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 \usepackage{etoolbox}
-\AtBeginEnvironment{align}{\setcounter{equation}{0}}
+%\AtBeginEnvironment{align}{\setcounter{equation}{0}}
 
 
 \usepackage[square, numbers, comma, sort&compress]{natbib}  % Use the "Natbib" style for the references in the Bibliography
 \bibliographystyle{unsrtnat}
-\setcitestyle{authoryear, open={[},close={]}}
+\setcitestyle{number, open={[},close={]}}
 \usepackage{verbatim}  % Needed for the "comment" environment to make LaTeX comments
 
 \usepackage{import}
@@ -93,7 +92,7 @@
 \newcommand{\tnode}{\textit{node}\xspace}
 \newcommand{\replace}[1]{\textcolor{red}{\huge{\textbf{#1}}}}
 \setlength\parindent{0pt}
-
+\setlength\parskip{0.5em}
 
 
 \lstset{frame=tb,
@@ -128,21 +127,44 @@
 \begin{document}
 \maketitle
 \vfill
-\newpage
+\clearpage
+\pagestyle{fancy}
+\lhead{\emph{Table of Contents}}
+\rhead{}
 \tableofcontents
-\newpage
+\clearpage
 
 %%%%%%%%%%%%%%
 % Chapters
 %%%%%%%%%%%%%%
-\clearpage
+
+
+
 \pagestyle{fancy}
 \lhead{\emph{Introduction}}
+\input{chapters/abstract.tex}
 \input{chapters/introduction.tex}
-\clearpage
+
+
+%\clearpage
 \pagestyle{fancy}
 \lhead{\emph{Instance Definition}}
 \input{chapters/instance.tex}
+
+%\clearpage
+\pagestyle{fancy}
+\lhead{\emph{Introduction to reinforcement learning}}
+\input{chapters/RLIntro.tex}
+
+
+% ------------------------------
+\clearpage
+\label{Bibliography}
+\lhead{\emph{Bibliography}}
+\rhead{}
+\replace{TODO: standardize references}
+\bibliography{bib/Bibliography}
+\nocite{*}
 
 
 %%%%%%%%%%%%%%
@@ -154,16 +176,10 @@
 \appendix
 \lhead{\emph{Appendix A}}
 \input{appendices/swarco.tex}
-\lhead{\emph{Appendix B}}
 \addtocontents{toc}{\vspace{2em}}
 
 
 
-% ------------------------------
-\label{Bibliography}
-\lhead{\emph{Bibliography}}
-\replace{TODO: standardize references}
-\bibliography{bib/Bibliography}
-\nocite{*}
+
 
 \end{document}
