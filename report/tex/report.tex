@@ -1,5 +1,5 @@
 \documentclass[a4paper,11pt,oneside]{article}
-\usepackage[headheight=28pt,margin=3cm]{geometry}
+\usepackage[headheight=28pt,showframe,margin=3cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -19,6 +19,7 @@
 \usepackage{pdfpages}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{arg\,max} % Jan Hlavacek
 \usepackage{listings}
 \usepackage{comment}
 \usepackage{hyperref}
@@ -33,6 +34,8 @@
 }
 \usepackage{multirow}
 \usepackage{cleveref}
+% \captionsetup[subfigure]{subrefformat=simple,labelformat=simple}
+    % \renewcommand\thesubfigure{(\alph{subfigure})}
 \usepackage{xspace}
 \usepackage{array}
 \usepackage{makecell}
@@ -55,7 +58,7 @@
 \newcommand{\vari}[1]{\ensuremath{V\left(#1\right)}}
 \newcommand{\todo}{\textcolor{red}{\huge{\textbf{TODO}}}}
 \newcommand{\abs}[1]{\ensuremath{\left|#1\right|}}
-\newcommand{\swarco}{\textsc{swarco}}
+\newcommand{\swarco}{\text{swarco}}
 \newcommand{\mycal}[1]{\ensuremath{\mathcal{#1}}}
 \newcommand{\Ex}[1]{\ensuremath{\mathbb{E}\left[#1\right]}}
 
@@ -151,10 +154,17 @@
 \lhead{\emph{Instance Definition}}
 \input{chapters/instance.tex}
 
+
 %\clearpage
 \pagestyle{fancy}
 \lhead{\emph{Introduction to reinforcement learning}}
 \input{chapters/RLIntro.tex}
+
+
+%\clearpage
+\pagestyle{fancy}
+\lhead{\emph{Implementation}}
+\input{chapters/implementation.tex}
 
 
 % ------------------------------
