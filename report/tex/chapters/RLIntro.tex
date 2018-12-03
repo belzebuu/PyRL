@@ -14,6 +14,7 @@ In this project, we define a Markov decision process by a 4-tuple $(\mathcal{S},
 Some like to include $\gamma$, a \textit{discount factor} in the definition of finite MDP. 
 We, however, leave this definition to the individual reinforcement learning algorithm.
 
+The states of a finite Markov decision process must have the \emph{Markov} property. If a state is Markov, i.e. possess the Markov property, it sufficiently describes the environment without relying on previous states of the process. An example of this could be when a drone learns to fly autonomously, one could use coordinates as the state representation. However, this is not sufficient, as it relies on the previous state(s) to compute the velocity; the coordinate-based state should be enhanced with a velocity vector to produce a Markov state.
 
 \vspace*{1em}
 
