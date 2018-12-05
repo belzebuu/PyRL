@@ -8,41 +8,19 @@ Reinforcement learning is a machine learning paradigm dedicated to solving seque
 The Markov decision process provides a formal description of sequential decision problems. 
 
 In this project, we define a Markov decision process by a 4-tuple $(\mathcal{S},\mathcal{A},\mathcal{R}, p)$, where $\mathcal{S}$ is the finite state-space, $\mathcal{A}$ is the finite action-space, $\mathcal{R} \subset \mathbb{R}$ is the finite reward-space, and the dynamics function $p : \mathcal{S} \times \mathcal{R} \times \mathcal{S} \times \mathcal{A} \rightarrow [0,1]$, defined in \cref{eq:p_def}, describes the conditional probability of entering a state $s' \in \mathcal{S}$ with reward $r \in \mathcal{R}$ given the previous state was $s \in \mathcal{S}$ and action $a \in \mathcal{A}(s)$ was chosen.
+
 \begin{align}
-    \label{eq:p_def} p(s',r\ |\ s,a) = \Pr{S_t\!=\!s', R_t\!=\!r\ |\ S_{t-1}\!=\!s, A_{t-1}\!=\!a}
+    \label{eq:p_def} p(s',r\,|\,s,a) = \Pr{S_t\!=\!s', R_t\!=\!r\,|\,S_{t-1}\!=\!s, A_{t-1}\!=\!a}
 \end{align}
+
 Some like to include $\gamma$, a \textit{discount factor} in the definition of finite MDP. 
 We, however, leave this definition to the individual reinforcement learning algorithm.
+The discount factor gives some factor of preference to immediate reward compared to future reward, which can improve learning rate, while ensuring convergence of policies in continous tasks.
 
-The states of a finite Markov decision process must have the \emph{Markov} property. If a state is Markov, i.e. possess the Markov property, it sufficiently describes the environment without relying on previous states of the process. An example of this could be when a drone learns to fly autonomously, one could use coordinates as the state representation. However, this is not sufficient, as it relies on the previous state(s) to compute the velocity; the coordinate-based state should be enhanced with a velocity vector to produce a Markov state.
+The states of a finite Markov decision process must have the \emph{Markov} property. If a state is Markov, i.e., possess the Markov property, the transition to it depend at most on the previous state and action $S_{t-1}$ and $A_{t-1}$, but never earlier states or actions $S_{t-n}$ or $A_{t-n}$ for $n$ greater than 1.
+An example of a non-Markov state would be when a drone is flying, and the state is a vector containing its coordinates.
+With such a state representation, any next state will depend on not only the current state and action but also previous states, as the velocity vector is essential to predict the future position of the drone, regardless of action taken.
 
-\vspace*{1em}
-
-When solving Markov decision processes, a sequence of random variables is introduced. Let $T = \set{1, 2, \ldots}$ be a sequence of discrete time steps, $S_t$ is then a random variable which indicates the state of the environment at time step $t \in T$, $A_t$ is the action chosen at time step $t \in T$, from the set $\mathcal{A}(s)$ which denotes the actions available from state $s$. 
-$R_t$ is the reward received after choosing action $A_{t-1}$ from state $S_{t-1}$
-
-%\begin{align}
-%    \sum_{s' \in \mycal{S}}\sum_{r \in \mycal{R}} p(s', r, s, a) &= 1 & \forall s \in \mycal{S}, \forall a \in \mycal{A}(s)\\
-%    p(s'\ |\ s,a) \defeq \Pr{S_t=s'\ |\ S_{t-1} = s, A_{t-1} = a} &= \sum_{r\in \mycal{R}}p(s',r\ |\ s,a) & \forall s,s' \in \mycal{S}, \forall a \in \mycal{A}(s)\\
-%    \Ex{R_t\ |\ S_{t-1}=s, A_{t-1}=a} &= \sum_{r \in \mycal{R}} r \sum_{s' \in \mycal{S}} p(s', r\ |\ s, a) & \forall s \in \mycal{S}, \forall a \in \mycal{A}(s)\\
-%    \Ex{R_t\ |\ S_{t-1}=s, A_{t-1}=a, S_t=s'} &= \sum_{r \in \mycal{R}} r \frac{p(s', r\ |\ s, a)}{p(s'\ |\ s, a)} & \forall s,s' \in \mycal{S}, \forall a \in \mycal{A}(s)
-%\end{align}
-%\replace{Text for above}
-
-\vspace*{1em}
-
-\Cref{fig:agent-environment} visualises the agent-environment loop. 
-Initially, the agent is placed in some environment \mycal{E}, from where the agent observes $S_0$.
-The agent the chooses some action $A_0 \in \mycal{A}(S_0)$, after the action has been performed, state $S_{t+1}$ and $R_t$ is presented to the agent, this results in a sequence of the form $S_0,A_0,R_1,S_1,A_1,R_2,S_2,\ldots$
-
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[scale=1]{../include/agent-environment-loop.pdf}
-    \caption{The Agent-Environment interface adapted from \citet[chap. 3]{RLBook2018}}
-    \label{fig:agent-environment}
-\end{figure}
-
-As such, the agent will learn the optimal \textit{policy} $\pi^*$ (or estimate thereof) by iteratively taking actions, and observing the following reward, and state of the environment.
 
 To give a small example of the Markov decision process, consider the small grid world in \cref{fig:gridworld}. 
 Suppose a robot is initially placed in square $a$, labeled \texttt{Start}, and that it has the goal of navigating to square $d$, labeled \texttt{End}. 
@@ -70,22 +48,45 @@ An MDP describing this problem is visualized in \cref{fig:gridworldMDP}.
 \end{figure}
 
 
+\subsection{Learning the optimal policy}
 
-\subsection{RL}
+For any given MDP, the goal is to obtain an optimal \emph{policy} $\pi_*$.\\
+A deterministic policy gives the action to take from state $s$, denoted $\pi(s)$, while a stochastic policy gives the probability of taking action $a$, from state $s$, denoted $\pi(a\,|\,s)$.
 
+If the complete MDP is known, the optimal policy for the process can be computed without ever interacting with the environment by dynamic programming. 
+Unfortunately, the complete MDP is seldom known, and one must turn to other methods. 
 
+The key idea behind reinforcement learning is to compartmentalize into two elements - an agent, and an environment. 
+The agent is able to observe the current state $s \in \mycal S$ and choose some action $a \in \mycal{A}(s)$ in response.
+While we can control the agent, the environment is unknown, apart from the assumption that it reacts to the agent's actions by entering some new state $s' \in \mycal{S}$, and will provide a reward $r\in \mycal{R}$ depending on the action taken from previous state.
 
-\subsubsection{Model-based \& Model-free}
+This interaction between agent and environment occurs over a sequence of discrete time steps $t \in \set{0, 1, 2, \ldots}$. At each time step $t$, random variables $S_t$, $A_t$ and $R_t$ indicate the state, action and reward at that time step. These random variables define the \emph{agent-environment loop}.
+
+\Cref{fig:agent-environment} visualises the agent-environment loop. 
+Initially, the agent is placed in some environment \mycal{E}, from where the agent observes $S_0$.
+The agent the chooses some action $A_0 \in \mycal{A}(S_0)$, after the action has been performed, state $S_{t+1}$ and $R_t$ is presented to the agent, this results in a sequence of the form $S_0,A_0,R_1,S_1,A_1,R_2,S_2,\ldots$
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[scale=1]{../include/agent-environment-loop.pdf}
+    \caption{Agent-Environment interface adapted from \citet[chap. 3]{RLBook2018}}
+    \label{fig:agent-environment}
+\end{figure}
+
 
 \subsubsection{On-policy \& Off-policy}
+
 
 \subsubsection{Reinforcement learning algorithm classes}
 \paragraph{Action-Value}
 \paragraph{Policy-Gradient}
 \paragraph{Actor-Critic}
 
+
 \subsubsection{Exploration vs Exploitation}
-A great dilemma in the field of reinforcement learning is the choice of exploration vs. exploitation, when should the agent perform the action it deems best according to previous experience, and when should it explore new actions of which the outcome is less known? 
+A great dilemma in the field of reinforcement learning is the choice of exploration vs. exploitation. 
+When should the agent perform the action it deems best according to previous experience, and when should it explore new actions of which the outcome is less known? 
+
 The most straightforward action-selection approach would be greedy action selection. With a greedy action selection, initial action values are essential, as otherwise, the agent may never explore some actions --- if there is an action which the agent has not yet attempted, it must see that action as attractive to get some idea of the usefulness of every action. 
 
 An improvement to the greedy action selection, which has performed well historically is the $\epsilon-greedy$ approach, where the agent picks a random action with probability $\epsilon$, and a greedy action with probability $1-\epsilon$.
@@ -95,4 +96,4 @@ An improvement to the greedy action selection, which has performed well historic
     \Pr{A_t = \argmax_a \left[Q_t(S_t,a)\right]} &= 1-\epsilon
 \end{align}
 
-Where $Q_t$ is the action-value function estimate at time $t$.
+Where $Q_t$ is the state-action quality measure at time $t$, defined slightly differently between reinforcement learning algorithms.
