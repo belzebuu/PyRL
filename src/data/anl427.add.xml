@@ -1,0 +1,26 @@
+<additionals>
+    <e1Detector id="anl427d1" lane="gneE29_1" pos="0.52" freq="100.00" file="e1Detector_gneE29_1_23.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d10" lane="gneE15_1" pos="27.77" freq="100.00" file="e1Detector_gneE15_1_2.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d11" lane="gneE16_1" pos="26.68" freq="100.00" file="e1Detector_gneE16_1_5.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d12" lane="gneE16_3" pos="28.52" freq="100.00" file="e1Detector_gneE16_3_3.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d13" lane="gneE16_0" pos="28.75" freq="100.00" file="e1Detector_gneE16_0_4.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d14" lane="-gneE43_1" pos="9.87" freq="100.00" file="e1Detector_-gneE43_1_13.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d15" lane="-gneE37_2" pos="1.60" freq="100.00" file="e1Detector_-gneE37_2_11.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d16" lane="-gneE25_0" pos="7.17" freq="100.00" file="e1Detector_-gneE25_0_16.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d17" lane="gneE33_0" pos="0.67" freq="100.00" file="e1Detector_gneE33_0_7.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d19" lane="-gneE37_1" pos="1.72" freq="100.00" file="e1Detector_-gneE37_1_10.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d2" lane="gneE30_1" pos="4.62" freq="100.00" file="e1Detector_gneE30_1_22.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d20" lane="gneE33_1" pos="2.55" freq="100.00" file="e1Detector_gneE33_1_8.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d21" lane="gneE17_2" pos="0.14" freq="100.00" file="e1Detector_gneE17_2_14.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d22" lane="gneE37_1" pos="0.66" freq="100.00" file="e1Detector_gneE37_1_9.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d23" lane="gneE32_2" pos="3.07" freq="100.00" file="e1Detector_gneE32_2_18.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d24" lane="gneE32_1" pos="3.08" freq="100.00" file="e1Detector_gneE32_1_17.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d25" lane="-gneE37_0" pos="3.20" freq="100.00" file="e1Detector_-gneE37_0_12.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d3" lane="gneE31_2" pos="19.44" freq="100.00" file="e1Detector_gneE31_2_20.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d4" lane="gneE30_2" pos="4.77" freq="100.00" file="e1Detector_gneE30_2_21.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d5" lane="gneE31_1" pos="19.34" freq="100.00" file="e1Detector_gneE31_1_19.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d6" lane="gneE32_0" pos="3.99" freq="100.00" file="e1Detector_gneE32_0_15.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d7" lane="gneE42_1" pos="60.00" freq="100.00" file="e1Detector_gneE42_1_23.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d8" lane="gneE14_1" pos="14.12" freq="100.00" file="e1Detector_gneE14_1_23.txt" friendlyPos="0"/>
+    <e1Detector id="anl427d9" lane="gneE16_2" pos="23.69" freq="100.00" file="e1Detector_gneE16_2_6.txt" friendlyPos="0"/>
+</additionals>

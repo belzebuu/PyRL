@@ -1,0 +1,11 @@
+<configuration>
+    <input>
+        <net-file value="anl427.net.xml"/>
+        <route-files value="anl427.rou.xml"/>
+        <additional-files value="anl427.add.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="86400"/>
+    </time>
+</configuration>
