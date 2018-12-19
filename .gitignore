@@ -1,1 +1,8 @@
 *conflicted*
+*.txt
+
+report/tex/report\(annotated\)\.pdf
+
+*.log
+
+src/runner\.log\.1
