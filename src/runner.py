@@ -200,7 +200,7 @@ class PhaseController(object):
             self.step_in_phase += 1
         self.step += 1
         for stat_obj in self.stat_objects:
-            stat_obj.on_step()
+            stat_obj.on_step(self.get_time())
         return True
 
     def get_available_actions(self):
@@ -244,6 +244,7 @@ class Statistics(object):
     ]
 
     def __init__(self, connection):
+        self.step = -1
         self.con = connection
         self.induction_loop_ids = self.con.inductionloop.getIDList()
         self.edge_ids = self.con.edge.getIDList()
@@ -253,13 +254,25 @@ class Statistics(object):
         for edge_id in self.edge_ids:
             self.con.edge.subscribe(edge_id, self.edge_subscription_variables)
         self.con.simulation.subscribe(self.simulation_subscribtion_variables)
+        self.accu_wait = 0
 
     def handle_simulation_subscribtion(self):
         data = self.con.simulation.getSubscriptionResults()
-        self.num_departed = data[util.traciconstants.simulation.number_of_departed_vehicles]
-        self.num_arrived = data[util.traciconstants.simulation.number_of_arrived_vehicles]
-        self.departed_ids = data[util.traciconstants.simulation.ids_of_departed_vehicles]
-        self.arrived_ids = data[util.traciconstants.simulation.ids_of_arrived_vehicles]
+        self.num_departed = data[tc.VAR_DEPARTED_VEHICLES_NUMBER]
+        self.num_arrived = data[tc.VAR_ARRIVED_VEHICLES_NUMBER]
+        self.departed_ids = data[tc.VAR_DEPARTED_VEHICLES_IDS]
+        self.arrived_ids = data[tc.VAR_ARRIVED_VEHICLES_IDS]
+        self.active_vehicle_ids.update(set(self.departed_ids))
+        self.active_vehicle_ids.difference_update(set(self.arrived_ids))
+        #if self.arrived_ids or self.departed_ids:
+        #    logger.debug(pformat((self.step, self.departed_ids,self.arrived_ids)))
+        for veh_id in self.departed_ids:
+            self.con.vehicle.subscribe(veh_id, self.vehicle_subscription_variables)
+        # for veh_id in self.arrived_ids: # it seems that subscriptions are removed automatically
+        #     try:
+        #         self.con.vehicle.unsubscribe(veh_id)
+        #     except:
+        #         pass
 
     def handle_inductionloop_subscribtion(self):
         self.induction_loop_occupancy_dict = {}
@@ -284,21 +297,30 @@ class Statistics(object):
         self.vehicle_count = 0
         self.vehicle_next_tls = {}
         self.vehicle_speed = {}
+        accu_wait = 0
         for veh_id in self.active_vehicle_ids:
             data = self.con.vehicle.getSubscriptionResults(veh_id)
-            self.vehicle_count = data[util.traciconstants.vehicle.count]
-            self.vehicle_accumulated_waiting_time[veh_id] = data[util.traciconstants.vehicle.accumulated_waiting_time]
-            self.vehicle_next_tls[veh_id] = data[util.traciconstants.vehicle.next_TLS]
-            self.vehicle_speed[veh_id] = data[util.traciconstants.vehicle.speed]
+            if data:
+                self.vehicle_count = data[util.traciconstants.vehicle.count]
+                self.vehicle_accumulated_waiting_time[veh_id] = data[util.traciconstants.vehicle.accumulated_waiting_time]
+                accu_wait += self.vehicle_accumulated_waiting_time[veh_id]
+                self.vehicle_next_tls[veh_id] = data[util.traciconstants.vehicle.next_TLS]
+                self.vehicle_speed[veh_id] = data[util.traciconstants.vehicle.speed]
+            else:
+                logger.warn(f"Failed to receive data for vehicle {veh_id}")
+        self.accu_wait = accu_wait
 
     def process_data(self):
         pass
 
-    def on_step(self):
-        self.handle_simulation_subscribtion()
+    def on_step(self, step):
+        assert self.step < step
+        self.step = step
         self.handle_inductionloop_subscribtion()
         self.handle_edge_subscribtion()
+        self.handle_simulation_subscribtion()
         self.handle_vehicle_subscription()
+        self.process_data()
 
 
 # Very inefficient way of getting incoming lanes for traffic lights. Unfortuantely needed.
@@ -392,16 +414,16 @@ def get_value(lane_map):
 
 def run(connection):
     junction_id = "gneJ6"
-    incoming = get_incoming_lanes_by_jumps(junction_id)
+    # incoming = get_incoming_lanes_by_jumps(junction_id)
     # Get TLS Program information
     controller = PhaseController(connection, junction_id)
     stats = Statistics(connection)
     controller.register_statistic_gatherer(stats)
     """execute the TraCI control loop"""
     while controller.simulation_step():
-        logger.debug(controller.get_time())
         if "change" in controller.get_available_actions():
             controller.start_phase_transition()
+        logger.info(f"Accumulated waiting time: {stats.accu_wait}")
     controller.close()
     sys.stdout.flush()
 
