@@ -13,6 +13,11 @@ from pprint import pformat
 from logging.handlers import RotatingFileHandler
 from collections import defaultdict
 
+import util.traciconstants.inductionloop
+import util.traciconstants.simulation
+import util.traciconstants.vehicle
+import util.traciconstants.edge
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -36,6 +41,7 @@ except ImportError:
     sys.exit("please declare environment variable 'SUMO_HOME' as the root directory of your sumo installation (it should contain folders 'bin', 'tools' and 'docs')")
 
 import traci
+import traci.constants as tc
 
 """
 The default traffic light phase configuration is:
@@ -112,6 +118,7 @@ class Agent:
         pass
     pass
 
+
 class PhaseController(object):
     """
     Used instead of directly calling traci
@@ -174,7 +181,8 @@ class PhaseController(object):
             self.connection.trafficlight.setPhase(self.junction_id, current_phase + 1 % self.num_phases)
     
     def register_statistic_gatherer(self, stat_object):
-        self.stat_objects.append(stat_object)
+        if stat_object.on_step:
+            self.stat_objects.append(stat_object)
 
     def simulation_step(self):
         if self.connection.simulation.getMinExpectedNumber() <= 0:
@@ -192,7 +200,7 @@ class PhaseController(object):
             self.step_in_phase += 1
         self.step += 1
         for stat_obj in self.stat_objects:
-            stat_obj.on_step(self.connection)
+            stat_obj.on_step()
         return True
 
     def get_available_actions(self):
@@ -207,12 +215,91 @@ class PhaseController(object):
     def is_transitioning(self):
         return self.connection.trafficlight.getPhase(self.junction_id) not in self.phase_to_transition_time.keys()
 
+
 class Statistics(object):
-    def __init__(self):
+
+    induction_loop_subscription_variables = [
+        util.traciconstants.inductionloop.last_step_occupancy,
+        util.traciconstants.inductionloop.last_step_vehicle_number,
+        util.traciconstants.inductionloop.last_step_vehicle_data
+    ]
+
+    simulation_subscribtion_variables = [
+        util.traciconstants.simulation.number_of_departed_vehicles,
+        util.traciconstants.simulation.ids_of_departed_vehicles,
+        util.traciconstants.simulation.number_of_arrived_vehicles,
+        util.traciconstants.simulation.ids_of_arrived_vehicles,
+    ]
+
+    edge_subscription_variables = [
+        util.traciconstants.edge.last_step_mean_speed,
+        util.traciconstants.edge.last_step_halting_number
+    ]
+
+    vehicle_subscription_variables = [
+        util.traciconstants.vehicle.accumulated_waiting_time,
+        util.traciconstants.vehicle.count,
+        util.traciconstants.vehicle.next_TLS,
+        util.traciconstants.vehicle.speed
+    ]
+
+    def __init__(self, connection):
+        self.con = connection
+        self.induction_loop_ids = self.con.inductionloop.getIDList()
+        self.edge_ids = self.con.edge.getIDList()
+        self.active_vehicle_ids = set()
+        for induction_loop_id in self.induction_loop_ids:
+            self.con.inductionloop.subscribe(induction_loop_id, self.induction_loop_subscription_variables)
+        for edge_id in self.edge_ids:
+            self.con.edge.subscribe(edge_id, self.edge_subscription_variables)
+        self.con.simulation.subscribe(self.simulation_subscribtion_variables)
+
+    def handle_simulation_subscribtion(self):
+        data = self.con.simulation.getSubscriptionResults()
+        self.num_departed = data[util.traciconstants.simulation.number_of_departed_vehicles]
+        self.num_arrived = data[util.traciconstants.simulation.number_of_arrived_vehicles]
+        self.departed_ids = data[util.traciconstants.simulation.ids_of_departed_vehicles]
+        self.arrived_ids = data[util.traciconstants.simulation.ids_of_arrived_vehicles]
+
+    def handle_inductionloop_subscribtion(self):
+        self.induction_loop_occupancy_dict = {}
+        self.induction_loop_vehicle_number_dict = {}
+        self.induction_loop_vehicle_data_dict = {}
+        for ind_id in self.induction_loop_ids:
+            data = self.con.inductionloop.getSubscriptionResults(ind_id)
+            self.induction_loop_occupancy_dict[ind_id] = data[util.traciconstants.inductionloop.last_step_occupancy]
+            self.induction_loop_vehicle_number_dict[ind_id] = data[util.traciconstants.inductionloop.last_step_vehicle_number]
+            self.induction_loop_vehicle_data_dict[ind_id] = data[util.traciconstants.inductionloop.last_step_vehicle_data]
+
+    def handle_edge_subscribtion(self):
+        self.edge_mean_speed_dict = {}
+        self.edge_halting_number_dict = {}
+        for edge_id in self.edge_ids:
+            data = self.con.edge.getSubscriptionResults(edge_id)
+            self.edge_mean_speed_dict[edge_id] = data[util.traciconstants.edge.last_step_mean_speed]
+            self.edge_halting_number_dict[edge_id] = data[util.traciconstants.edge.last_step_halting_number]
+
+    def handle_vehicle_subscription(self):
+        self.vehicle_accumulated_waiting_time = {}
+        self.vehicle_count = 0
+        self.vehicle_next_tls = {}
+        self.vehicle_speed = {}
+        for veh_id in self.active_vehicle_ids:
+            data = self.con.vehicle.getSubscriptionResults(veh_id)
+            self.vehicle_count = data[util.traciconstants.vehicle.count]
+            self.vehicle_accumulated_waiting_time[veh_id] = data[util.traciconstants.vehicle.accumulated_waiting_time]
+            self.vehicle_next_tls[veh_id] = data[util.traciconstants.vehicle.next_TLS]
+            self.vehicle_speed[veh_id] = data[util.traciconstants.vehicle.speed]
+
+    def process_data(self):
         pass
-    
-    def on_step(self, connection):
-        pass
+
+    def on_step(self):
+        self.handle_simulation_subscribtion()
+        self.handle_inductionloop_subscribtion()
+        self.handle_edge_subscribtion()
+        self.handle_vehicle_subscription()
+
 
 # Very inefficient way of getting incoming lanes for traffic lights. Unfortuantely needed.
 def get_incoming_lanes(trafficLightID):
@@ -303,19 +390,18 @@ def get_value(lane_map):
     return v
 
 
-
 def run(connection):
     junction_id = "gneJ6"
     incoming = get_incoming_lanes_by_jumps(junction_id)
     # Get TLS Program information
     controller = PhaseController(connection, junction_id)
+    stats = Statistics(connection)
+    controller.register_statistic_gatherer(stats)
     """execute the TraCI control loop"""
     while controller.simulation_step():
         logger.debug(controller.get_time())
         if "change" in controller.get_available_actions():
             controller.start_phase_transition()
-        #logger.debug(f"step: {step}; nextSwitch: {connection.trafficlight.getNextSwitch(junction_id)}; config: {connection.trafficlight.getRedYellowGreenState(junction_id)}")
-        #print(value)
     controller.close()
     sys.stdout.flush()
 

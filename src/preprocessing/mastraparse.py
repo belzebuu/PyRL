@@ -11,7 +11,7 @@ import random
 from ortools.linear_solver import pywraplp
 import multiprocessing as mp
 import os
-
+from collections import defaultdict
 
 class mastra():
     """
@@ -298,6 +298,10 @@ def generate_vehicles(detector_to_route_id, detector_route_counts, interval, mul
     """
     Generates a .rou.xml file for use in the traffic simulator SUMO
     """
+    pprint(detector_to_route_id)
+    pprint(detector_route_counts)
+    pprint(interval)
+    pprint(multiplier)
     def id_num_to_route_id(route_number):
         if type(route_number) == int:
             return "r" + str(route_number)
@@ -319,28 +323,43 @@ def generate_vehicles(detector_to_route_id, detector_route_counts, interval, mul
     veh_str = "<vehicle id=\"{}\" type=\"type1\" route=\"{}\" depart=\"{}\"/>"
     veh_str_alt = "<vehicle id=\"{}\" route=\"{}\" depart=\"{}\"/>"
     rc = filter(None, detector_route_counts)
+    departure_dict = defaultdict(list)
     for route_counts in rc:
         group += 1
-        departure_intervals = {}
         for route, count in route_counts.items():
-            minutes_between_departures = float(interval)/float(count)*0.7
-            seconds_between_departures = datetime.timedelta(
-                minutes=minutes_between_departures)
-            departure_intervals[route] = int(
-                seconds_between_departures.total_seconds())
-            # if count == 1:
-            # departure_intervals[route] = random.randint(interval*60/2+1, interval*60-1)
-            departure_tracker = departure_intervals.copy()
-        for i in range((group-1) * interval * 60, group * interval * 60):
-            for k, v in departure_tracker.items():
-                if v == 0:
-                    r_id = id_num_to_route_id(
-                        random.choice(detector_to_route_id[k]))
-                    print(veh_str_alt.format(v_id, r_id, i), file=out)
-                    v_id += 1
-                    departure_tracker[k] = departure_intervals[k]
-                else:
-                    departure_tracker[k] -= 1
+            count = int(count * multiplier)
+            for _ in range(count):
+                time = int(random.uniform((group-1) * interval * 60, group * interval * 60))
+                departure_dict[time].append(random.choice(detector_to_route_id[route]))
+    for time, departures in departure_dict.items():
+        v_id = 0
+        for r in departures:
+            r_id = id_num_to_route_id(r)
+            print(veh_str_alt.format(v_id, r_id, time), file=out)
+            v_id += 1
+    # group = 0
+    # for route_counts in rc:
+    #     group += 1
+    #     departure_intervals = {}
+    #     for route, count in route_counts.items():
+    #         minutes_between_departures = float(interval)/float(count)*0.7
+    #         seconds_between_departures = datetime.timedelta(
+    #             minutes=minutes_between_departures)
+    #         departure_intervals[route] = int(
+    #             seconds_between_departures.total_seconds())
+    #         # if count == 1:
+    #         # departure_intervals[route] = random.randint(interval*60/2+1, interval*60-1)
+    #         departure_tracker = departure_intervals.copy()
+    #     for i in range((group-1) * interval * 60, group * interval * 60):
+    #         for k, v in departure_tracker.items():
+    #             if v == 0:
+    #                 r_id = id_num_to_route_id(
+    #                     random.choice(detector_to_route_id[k]))
+    #                 print(veh_str_alt.format(v_id, r_id, i), file=out)
+    #                 v_id += 1
+    #                 departure_tracker[k] = departure_intervals[k]
+    #             else:
+    #                 departure_tracker[k] -= 1
 
 
 # Each tuple is an order of detectors which a route follows. Should be converted to int tuples before use
